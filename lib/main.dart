@@ -1,4 +1,4 @@
-// 0.0.3
+// 0.0.4
 
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,23 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(),
+      theme: _isDarkMode
+          ? ThemeData(
+              colorScheme: const ColorScheme.dark(
+                primary: Color.fromARGB(
+                    255, 31, 31, 31), // Задаем голубой цвет как primary
+                secondary: Color.fromARGB(
+                    255, 48, 48, 48), // Задаем зеленый цвет как secondary
+              ),
+            )
+          : ThemeData(
+              colorScheme: const ColorScheme.light(
+                primary: Color.fromARGB(
+                    255, 255, 255, 255), // Задаем голубой цвет как primary
+                secondary: Color.fromARGB(
+                    255, 214, 214, 214), // Задаем зеленый цвет как secondary
+              ),
+            ),
       home: const MyHomePage(),
     );
   }
@@ -43,8 +59,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
+
     return Scaffold(
+      backgroundColor: secondaryColor,
       appBar: AppBar(
+        backgroundColor: primaryColor,
         title: const Text("Where in the world?"),
         actions: [
           IconButton(
