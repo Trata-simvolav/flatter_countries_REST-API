@@ -1,4 +1,4 @@
-// 0.0.9
+// 0.0.10
 
 import 'dart:convert';
 
@@ -61,8 +61,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late Future<List<dynamic>> _futureData;
-  late Color inverterPrimary =
-      invertedColor(Theme.of(context).colorScheme.primary);
 
   @override
   void initState() {
@@ -172,7 +170,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       Text(
                                         item['name']['common'],
                                         style: TextStyle(
-                                            color: inverterPrimary,
+                                            color: invertedColor(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
                                             fontSize: 22,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -180,19 +181,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                       Text(
                                         'Population: ${item['population']}',
                                         style: TextStyle(
-                                            color: inverterPrimary,
+                                            color: invertedColor(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
                                             fontSize: 16),
                                       ),
                                       Text(
                                         'Region: ${item['region']}',
                                         style: TextStyle(
-                                            color: inverterPrimary,
+                                            color: invertedColor(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
                                             fontSize: 16),
                                       ),
                                       Text(
                                         'Capital: ${item['capital'][0]}',
                                         style: TextStyle(
-                                            color: inverterPrimary,
+                                            color: invertedColor(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
                                             fontSize: 16),
                                       ),
                                     ],
