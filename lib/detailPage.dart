@@ -73,135 +73,36 @@ class SecondPage extends StatelessWidget {
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(
-                    text: "Native Name: ",
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: "${item['name']['nativeName']['ell']['common']}",
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            buildPopulationText("Native Name",
+                "${item['name']['nativeName']['ell']['common']}"),
             const SizedBox(height: 10),
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(
-                    text: "Population: ",
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: "${item['population']}",
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            buildPopulationText("Population", "${item['population']}"),
             const SizedBox(height: 10),
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(
-                    text: "Region: ",
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: "${item['region']}",
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            buildPopulationText("Region", "${item['region']}"),
             const SizedBox(height: 10),
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(
-                    text: "Sub Region: ",
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: "${item['subregion']}",
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            buildPopulationText("Sub Region", "${item['subregion']}"),
             const SizedBox(height: 10),
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(
-                    text: "Capital: ",
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: "${item['capital'][0]}",
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            buildPopulationText("Capital", "${item['capital'][0]}"),
           ],
         ),
       ),
     );
   }
 
-  Widget buildPopulationText(String populationValue) {
+  Widget buildPopulationText(String primaryValue, String secondaryValue) {
     return Text.rich(
       TextSpan(
         children: [
-          const TextSpan(
-            text: "Population: ",
-            style: TextStyle(
+          TextSpan(
+            text: "$primaryValue: ",
+            style: const TextStyle(
               fontSize: 17,
               color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
           ),
           TextSpan(
-            text: populationValue,
+            text: secondaryValue,
             style: const TextStyle(
               fontSize: 17,
               color: Colors.black,
