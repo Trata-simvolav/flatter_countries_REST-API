@@ -68,34 +68,46 @@ class SecondPage extends StatelessWidget {
             Text(
               "${item['name']['common']}",
               style: const TextStyle(
-                  fontSize: 25,
+                  fontSize: 30,
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 45),
-            buildPopulationText("Native Name",
-                "${item['name']['nativeName'].values.first}"), // + ['common']
+            buildCountriesText(
+                "Native Name",
+                firstValueGeter(
+                    item['name']['nativeName'].values.first, 'common')),
             const SizedBox(height: 15),
-            buildPopulationText("Population", "${item['population']}"),
+            buildCountriesText("Population", "${item['population']}"),
             const SizedBox(height: 15),
-            buildPopulationText("Region", "${item['region']}"),
+            buildCountriesText("Region", "${item['region']}"),
             const SizedBox(height: 15),
-            buildPopulationText("Sub Region", "${item['subregion']}"),
+            buildCountriesText("Sub Region", "${item['subregion']}"),
             const SizedBox(height: 15),
-            buildPopulationText("Capital", "${item['capital'][0]}"),
+            buildCountriesText("Capital", "${item['capital'][0]}"),
             const SizedBox(height: 40),
-            buildPopulationText("Top Level Domain", "${item['tld'][0]}"),
+            buildCountriesText("Top Level Domain", "${item['tld'][0]}"),
             const SizedBox(height: 15),
-            buildPopulationText("currencies",
-                "${item['currencies'].values.first}"), // + ['name']
-            const SizedBox(height: 15),
+            buildCountriesText("Currencies",
+                firstValueGeter(item['currencies'].values.first, 'name')),
+            const SizedBox(height: 15), //borders
+            buildCountriesText("Languages: ", languagesRet(item['languages'])),
+            const SizedBox(height: 30),
+            // const Text(
+            //   "Borders",
+            //   style: TextStyle(
+            //     fontSize: 20,
+            //     color: Colors.black,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
           ],
         ),
       ),
     );
   }
 
-  Widget buildPopulationText(String primaryValue, String secondaryValue) {
+  Widget buildCountriesText(String primaryValue, String secondaryValue) {
     return Text.rich(
       TextSpan(
         children: [
@@ -117,5 +129,20 @@ class SecondPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String firstValueGeter(Map<Object, dynamic> element, String needElement) {
+    return '${element[needElement]}';
+  }
+
+  String languagesRet(Map<Object, dynamic> element) {
+    String doneStr = '';
+
+    for (var key in element.keys) {
+      String commonValue = element[key];
+      doneStr += '$commonValue ';
+    }
+
+    return doneStr;
   }
 }
