@@ -1,4 +1,4 @@
-// 0.0.5
+// 0.0.6
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -58,6 +58,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late Future<List<dynamic>> _futureData;
+  late Color inverterPrimary =
+      invertedColor(Theme.of(context).colorScheme.primary);
 
   @override
   void initState() {
@@ -113,64 +115,65 @@ class _MyHomePageState extends State<MyHomePage> {
               itemCount: data.length,
               itemBuilder: (context, index) {
                 Map<String, dynamic> item = data[index];
-                return Card(
-                  color: Theme.of(context).colorScheme.background,
-                  shadowColor: Colors.black.withOpacity(0.5),
-                  elevation: 5,
-                  margin: const EdgeInsets.all(8),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(16),
-                    title: Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 17.0,
-                      ),
-                      child: Image.network(
-                        '${item['flags']['png']}',
-                        width: 170,
-                        height: 170,
-                      ),
-                    ),
-                    subtitle: Row(
-                      children: [
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item['name']['common'],
-                                style: TextStyle(
-                                    color: invertedColor(
-                                        Theme.of(context).colorScheme.primary),
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Population: ${item['population']}',
-                                style: TextStyle(
-                                    color: invertedColor(
-                                        Theme.of(context).colorScheme.primary),
-                                    fontSize: 16),
-                              ),
-                              Text(
-                                'Region: ${item['region']}',
-                                style: TextStyle(
-                                    color: invertedColor(
-                                        Theme.of(context).colorScheme.primary),
-                                    fontSize: 16),
-                              ),
-                              Text(
-                                'Capital: ${item['capital'][0]}',
-                                style: TextStyle(
-                                    color: invertedColor(
-                                        Theme.of(context).colorScheme.primary),
-                                    fontSize: 16),
-                              ),
-                            ],
-                          ),
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    top: 9.0,
+                    bottom: 8.0,
+                    left: 37.0,
+                    right: 37.0,
+                  ),
+                  child: Card(
+                    color: Theme.of(context).colorScheme.background,
+                    shadowColor: Colors.black.withOpacity(0.5),
+                    elevation: 5,
+                    margin: const EdgeInsets.all(8),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      title: Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 17.0,
                         ),
-                      ],
+                        child: Image.network(
+                          '${item['flags']['png']}',
+                          width: 170,
+                          height: 170,
+                        ),
+                      ),
+                      subtitle: Row(
+                        children: [
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['name']['common'],
+                                  style: TextStyle(
+                                      color: inverterPrimary,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Population: ${item['population']}',
+                                  style: TextStyle(
+                                      color: inverterPrimary, fontSize: 16),
+                                ),
+                                Text(
+                                  'Region: ${item['region']}',
+                                  style: TextStyle(
+                                      color: inverterPrimary, fontSize: 16),
+                                ),
+                                Text(
+                                  'Capital: ${item['capital'][0]}',
+                                  style: TextStyle(
+                                      color: inverterPrimary, fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
