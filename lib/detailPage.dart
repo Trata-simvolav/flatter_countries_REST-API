@@ -73,12 +73,26 @@ class SecondPage extends StatelessWidget {
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
-            Text(
-              "Native Name: ${item['name']['nativeName']['ell']['common']}",
-              style: const TextStyle(
-                  fontSize: 17,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold),
+            Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(
+                    text: "Native Name: ",
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "${item['name']['nativeName']['ell']['common']}",
+                    style: const TextStyle(
+                      fontSize: 17,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
             Text.rich(
@@ -103,28 +117,70 @@ class SecondPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Text(
-              "Region: ${item['region']}",
-              style: const TextStyle(
-                  fontSize: 17,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold),
+            Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(
+                    text: "Region: ",
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "${item['region']}",
+                    style: const TextStyle(
+                      fontSize: 17,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
-            Text(
-              "Sub Region: ${item['subregion']}",
-              style: const TextStyle(
-                  fontSize: 17,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold),
+            Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(
+                    text: "Sub Region: ",
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "${item['subregion']}",
+                    style: const TextStyle(
+                      fontSize: 17,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
-            Text(
-              "Capital: ${item['capital'][0]}",
-              style: const TextStyle(
-                  fontSize: 17,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold),
+            Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(
+                    text: "Capital: ",
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "${item['capital'][0]}",
+                    style: const TextStyle(
+                      fontSize: 17,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
