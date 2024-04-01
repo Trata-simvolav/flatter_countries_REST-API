@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'main.dart';
 
-class SecondPage extends StatelessWidget {
+class SecondPage extends StatelessWidget{
   final Map<String, dynamic> item;
 
   const SecondPage({super.key, required this.item});
@@ -30,7 +31,7 @@ class SecondPage extends StatelessWidget {
                           spreadRadius: 2,
                           blurRadius: 5,
                           offset:
-                              const Offset(0, 3), // changes position of shadow
+                              const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -67,63 +68,78 @@ class SecondPage extends StatelessWidget {
             const SizedBox(height: 45),
             Text(
               "${item['name']['common']}",
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 30,
-                  color: Colors.black,
+                  color: invertedColor(Theme.of(context).colorScheme.primary),
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 45),
-            buildCountriesText(
+            Expanded(child:            
+            ListView(
+              children: <Widget>[
+                FutureBuilder(
+                  future: Future.delayed(const Duration(milliseconds: 250), () {
+                    return languagesRet(item['languages']);
+                  },
+                ),
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator(); 
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Column(children: 
+                            <Widget>[
+                buildCountriesText(
                 "Native Name",
                 firstValueGeter(
-                    item['name']['nativeName'].values.first, 'common')),
+                    item['name']['nativeName'].values.first, 'common'), context),
             const SizedBox(height: 15),
-            buildCountriesText("Population", "${item['population']}"),
+            buildCountriesText("Population", "${item['population']}", context),
             const SizedBox(height: 15),
-            buildCountriesText("Region", "${item['region']}"),
+            buildCountriesText("Region", "${item['region']}", context),
             const SizedBox(height: 15),
-            buildCountriesText("Sub Region", "${item['subregion']}"),
+            buildCountriesText("Sub Region", "${item['subregion']}", context),
             const SizedBox(height: 15),
-            buildCountriesText("Capital", "${item['capital'][0]}"),
+            buildCountriesText("Capital", "${item['capital'][0]}", context),
             const SizedBox(height: 40),
-            buildCountriesText("Top Level Domain", "${item['tld'][0]}"),
+            buildCountriesText("Top Level Domain", "${item['tld'][0]}", context),
             const SizedBox(height: 15),
             buildCountriesText("Currencies",
-                firstValueGeter(item['currencies'].values.first, 'name')),
-            const SizedBox(height: 15), //borders
-            buildCountriesText("Languages: ", languagesRet(item['languages'])),
+                firstValueGeter(item['currencies'].values.first, 'name'), context),
+            const SizedBox(height: 15),
+            buildCountriesText("Languages: ", languagesRet(item['languages']), context),
             const SizedBox(height: 30),
-            // const Text(
-            //   "Borders",
-            //   style: TextStyle(
-            //     fontSize: 20,
-            //     color: Colors.black,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
+                            ],);
+                  }
+                },
+                ),
+              ],
+            ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget buildCountriesText(String primaryValue, String secondaryValue) {
+  Widget buildCountriesText(String primaryValue, String secondaryValue, context) {
     return Text.rich(
       TextSpan(
         children: [
           TextSpan(
             text: "$primaryValue: ",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
-              color: Colors.black,
+              color: invertedColor(Theme.of(context).colorScheme.primary),
               fontWeight: FontWeight.bold,
             ),
           ),
           TextSpan(
             text: secondaryValue,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
-              color: Colors.black,
+              color: invertedColor(Theme.of(context).colorScheme.primary),
             ),
           ),
         ],
@@ -144,5 +160,9 @@ class SecondPage extends StatelessWidget {
     }
 
     return doneStr;
+  }
+
+  Color invertedColor(Color color) {
+    return color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
 }

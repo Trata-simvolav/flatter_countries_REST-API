@@ -1,10 +1,8 @@
-// 0.1.0
-
-import 'dart:convert';
+// 0.1.1
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
+import 'fetchFragment.dart';
 import 'detailPage.dart';
 
 void main() {
@@ -20,6 +18,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _FetchElementState fetchElementState = _FetchElementState();
+
   bool _isDarkMode = false;
 
   void toggleDarkMode() {
@@ -60,26 +60,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late Future<List<dynamic>> _futureData;
-
-  @override
-  void initState() {
-    super.initState();
-    _futureData = fetchPost();
-  }
-
-  Future<List<dynamic>> fetchPost() async {
-    final response =
-        await http.get(Uri.parse("https://restcountries.com/v3.1/all"));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data;
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
