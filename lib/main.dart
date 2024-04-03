@@ -1,53 +1,63 @@
-// 0.1.1
+// 0.1.2
 
 import 'package:flutter/material.dart';
-
 import 'fetchFragment.dart';
 import 'detailPage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+class MyApp extends StatelessWidget {
   @override
-  // ignore: library_private_types_in_public_api
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    final themeProvider = ThemeProvider.of(context);
+    return ThemeProvider(
+      // ignore: avoid_types_as_parameter_names
+      toggleTheme: (bool) {},
+      isDarkMode: false,
+      child: MaterialApp(
+        theme: themeProvider!.isDarkMode
+            ? ThemeData(
+                colorScheme: const ColorScheme.dark(
+                  primary: Color.fromARGB(255, 25, 25, 25),
+                  secondary: Color.fromARGB(255, 53, 53, 53),
+                  background: Color.fromARGB(255, 74, 74, 74),
+                ),
+              )
+            : ThemeData(
+                colorScheme: const ColorScheme.dark(
+                  primary: Color.fromARGB(255, 255, 255, 255),
+                  secondary: Color.fromARGB(255, 247, 247, 247),
+                  background: Color.fromARGB(255, 240, 240, 240),
+                ),
+              ),
+        home: MyHomePage(),
+      ),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  final _FetchElementState fetchElementState = _FetchElementState();
+// ignore: must_be_immutable
+class ThemeProvider extends InheritedWidget {
+  bool isDarkMode = false;
+  final Function(bool) toggleTheme;
+  final Widget child;
 
-  bool _isDarkMode = false;
+  ThemeProvider({
+    super.key,
+    this.isDarkMode = false,
+    required this.toggleTheme,
+    required this.child,
+  }) : super(child: child);
 
-  void toggleDarkMode() {
-    setState(() {
-      _isDarkMode = !_isDarkMode;
-    });
+  static ThemeProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ThemeProvider>();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: _isDarkMode
-          ? ThemeData(
-              colorScheme: const ColorScheme.dark(
-                primary: Color.fromARGB(255, 25, 25, 25),
-                secondary: Color.fromARGB(255, 53, 53, 53),
-                background: Color.fromARGB(255, 74, 74, 74),
-              ),
-            )
-          : ThemeData(
-              colorScheme: const ColorScheme.dark(
-                primary: Color.fromARGB(255, 255, 255, 255),
-                secondary: Color.fromARGB(255, 247, 247, 247),
-                background: Color.fromARGB(255, 240, 240, 240),
-              ),
-            ),
-      home: const MyHomePage(),
-    );
+  bool updateShouldNotify(ThemeProvider oldWidget) {
+    return oldWidget.isDarkMode != isDarkMode;
   }
 }
 
@@ -55,13 +65,16 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  FetchElement fetchElementState = new FetchElement();
+
   @override
   Widget build(BuildContext context) {
+    final themeProvider = ThemeProvider.of(context)!;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
@@ -69,25 +82,26 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(
           "WHERE MY SOCS",
           style: TextStyle(
-              color: invertedColor(Theme.of(context).colorScheme.primary)),
+            color: invertedColor(Theme.of(context).colorScheme.primary),
+          ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.lightbulb_outline,
-                color: invertedColor(Theme.of(context).colorScheme.primary)),
+            icon: Icon(
+              Icons.lightbulb_outline,
+              color: invertedColor(Theme.of(context).colorScheme.primary),
+            ),
             onPressed: () {
-              final _MyAppState? state =
-                  context.findAncestorStateOfType<_MyAppState>();
-              state?.toggleDarkMode();
+              themeProvider.toggleTheme(!themeProvider.isDarkMode);
             },
           ),
         ],
       ),
       body: FutureBuilder(
-        future: _futureData,
+        future: fetchElementState.futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -97,12 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
               itemBuilder: (context, index) {
                 Map<String, dynamic> item = data[index];
                 return Padding(
-                  padding: const EdgeInsets.only(
-                    top: 9.0,
-                    bottom: 8.0,
-                    left: 37.0,
-                    right: 37.0,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 37),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -123,10 +133,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             width: 310,
                             child: ClipRRect(
                               borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(
-                                    15.0), // радиус левого верхнего угла
-                                topRight: Radius.circular(
-                                    15.0), // радиус правого верхнего угла
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
                               ),
                               child: Image.network(
                                 '${item['flags']['png']}',

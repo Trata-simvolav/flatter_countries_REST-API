@@ -1,27 +1,27 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';
 
 // ignore: must_be_immutable
-class FetchElement extends StatefulWidget{
-  const FetchElement({super.key});
-  
+class FetchElement extends StatefulWidget {
+  FetchElement({super.key});
+
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    throw UnimplementedError();
-  }
+  _FetchElementState createState() => _FetchElementState();
+
+  _FetchElementState fetchElementState = new _FetchElementState();
+  Future<List<dynamic>> get futureData => fetchElementState.fetchPost();
 }
 
-class _FetchElementState extends State<FetchElement>{
-  late Future<List<dynamic>> _futureData;
-  Future<List<dynamic>> get futureData => _futureData;
+class _FetchElementState extends State<FetchElement> {
+  late Future<List<dynamic>> futureDataList;
 
   @override
   void initState() {
     super.initState();
-    _futureData = fetchPost();
+    futureDataList = fetchPost();
   }
 
   Future<List<dynamic>> fetchPost() async {
@@ -35,10 +35,10 @@ class _FetchElementState extends State<FetchElement>{
       throw Exception('Failed to load data');
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     throw UnimplementedError();
-  }  
+  }
 }
