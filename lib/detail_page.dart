@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
+// import 'main.dart';
 
 // ignore: must_be_immutable
 class SecondPage extends StatelessWidget {
   final Map<String, dynamic> item;
 
-  SecondPage({super.key, required this.item});
+  const SecondPage({super.key, required this.item});
 
   // MyApp myApp = new MyApp();
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = ThemeProvider.of(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -21,15 +19,6 @@ class SecondPage extends StatelessWidget {
           style: TextStyle(
               color: invertedColor(Theme.of(context).colorScheme.primary)),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.lightbulb_outline,
-                color: invertedColor(Theme.of(context).colorScheme.primary)),
-            onPressed: () {
-              themeProvider?.toggleTheme(!themeProvider.isDarkMode);
-            },
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),

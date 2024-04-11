@@ -5,7 +5,7 @@ import 'shopping_cart_screen.dart';
 import 'product_class.dart';
 import 'product_detail_screen.dart';
 import 'product_searc_delegate.dart';
-import 'product_list_header.dart';
+import 'filter_header.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext  context) {
+  Widget build(BuildContext context) {
     return const MaterialApp(
       home: ProductListScreen(),
     );

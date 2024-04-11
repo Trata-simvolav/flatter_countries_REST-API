@@ -1,4 +1,3 @@
-// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,9 +8,11 @@ class FetchElement extends StatefulWidget {
   FetchElement({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _FetchElementState createState() => _FetchElementState();
 
-  _FetchElementState fetchElementState = new _FetchElementState();
+  // ignore: library_private_types_in_public_api
+  _FetchElementState fetchElementState = _FetchElementState();
   Future<List<dynamic>> get futureData => fetchElementState.fetchPost();
 }
 
@@ -38,7 +39,6 @@ class _FetchElementState extends State<FetchElement> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     throw UnimplementedError();
   }
 }
