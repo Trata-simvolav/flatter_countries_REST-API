@@ -1,214 +1,160 @@
-// // 0.1.3
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-// import 'package:flutter/material.dart';
-// import 'fetchFragment.dart';
-// import 'detailPage.dart';
+void main() {
+  runApp(MyApp());
+}
 
-// void main() {
-//   runApp(const MyApp());
-// }
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Search and Filter Example',
+      home: SearchFilterPage(),
+    );
+  }
+}
 
-// class MyApp extends StatefulWidget {
-//   const MyApp({Key? key}) : super(key: key);
+class SearchFilterPage extends StatefulWidget {
+  @override
+  _SearchFilterPageState createState() => _SearchFilterPageState();
+}
 
-//   @override
-//   // ignore: library_private_types_in_public_api
-//   _MyAppState createState() => _MyAppState();
-// }
+class _SearchFilterPageState extends State<SearchFilterPage> {
+  List<String> countries = [];
+  List<String> filteredCountries = [];
 
-// class _MyAppState extends State<MyApp> {
-//   bool _isDarkMode = false;
+  String dropdownValue = 'All';
 
-//   void toggleDarkMode() {
-//     setState(() {
-//       _isDarkMode = !_isDarkMode;
-//     });
-//   }
+  TextEditingController searchController = TextEditingController();
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       theme: _isDarkMode
-//           ? ThemeData(
-//               colorScheme: const ColorScheme.dark(
-//                 primary: Color.fromARGB(
-//                     255, 31, 31, 31), // Задаем голубой цвет как primary
-//                 secondary: Color.fromARGB(
-//                     255, 48, 48, 48), // Задаем зеленый цвет как secon1111☺dary
-//                 background: Color.fromARGB(
-//                     255, 39, 39, 39),
-//               ),
-//             )
-//           : ThemeData(
-//               colorScheme: const ColorScheme.light(
-//                 primary: Color.fromARGB(
-//                     255, 255, 255, 255), // Задаем голубой цвет как primary
-//                 secondary: Color.fromARGB(
-//                     255, 214, 214, 214),
-//                 background: Color.fromARGB(
-//                     255, 234, 234, 234),
-//               ),
-//             ),
-//       home: const MyHomePage(),
-//     );
-//   }
-// }
+  @override
+  void initState() {
+    fetchCountries();
+    super.initState();
+  }
 
+  Future<void> fetchCountries() async {
+    final response =
+        await http.get(Uri.parse('https://restcountries.com/v3.1/all'));
 
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({Key? key}) : super(key: key);
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      setState(() {
+        countries =
+            data.map<String>((country) => country['name']['common']).toList();
+        filteredCountries = countries;
+      });
+    } else {
+      throw Exception('Failed to load countries');
+    }
+  }
 
-//   @override
-//   // ignore: library_private_types_in_public_api
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Search and Filter Example'),
+      ),
+      body: Column(
+        children: [
+          TextField(
+            controller: searchController,
+            onChanged: (value) {
+              filterSearchResults(value);
+            },
+            decoration: InputDecoration(
+              hintText: 'Search...',
+            ),
+          ),
+          DropdownButton<String>(
+            value: dropdownValue,
+            onChanged: (String? newValue) {
+              setState(() {
+                dropdownValue = newValue!;
+                filterDropdown(newValue);
+              });
+            },
+            items: <String>[
+              'All',
+              'Africa',
+              'Asia',
+              'Europe',
+              'North America',
+              'Oceania',
+              'South America'
+            ].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredCountries.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(filteredCountries[index]),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-// class _MyHomePageState extends State<MyHomePage> {
-//   FetchElement fetchElementState = FetchElement();
+  void filterSearchResults(String query) {
+    List<String> searchResults = [];
+    if (query.isNotEmpty) {
+      countries.forEach((country) {
+        if (country.toLowerCase().contains(query.toLowerCase())) {
+          searchResults.add(country);
+        }
+      });
+    } else {
+      searchResults = countries;
+    }
+    setState(() {
+      filteredCountries = searchResults;
+    });
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
+  void filterDropdown(String continent) {
+    List<String> filteredList = [];
+    if (continent == 'All') {
+      filteredList = countries;
+    } else {
+      countries.forEach((country) {
+        if (getContinentForCountry(country) == continent) {
+          filteredList.add(country);
+        }
+      });
+    }
+    setState(() {
+      filteredCountries = filteredList;
+    });
+  }
 
-//     return Scaffold(
-//         backgroundColor: Theme.of(context).colorScheme.secondary,
-//         appBar: AppBar(
-//           backgroundColor: Theme.of(context).colorScheme.primary,
-//           title: Text(
-//             "WHERE MY SOCS",
-//             style: TextStyle(
-//               color: invertedColor(Theme.of(context).colorScheme.primary),
-//             ),
-//           ),
-//           actions: [
-//             IconButton(
-//               icon: Icon(
-//                 Icons.lightbulb_outline,
-//                 color: invertedColor(Theme.of(context).colorScheme.primary),
-//               ),
-//               onPressed: () {
-//                 final _MyAppState? state =
-//                   context.findAncestorStateOfType<_MyAppState>();
-//               state?.toggleDarkMode();
-//               },
-//             ),
-//           ],
-//         ),
-//         body: FutureBuilder(
-//           future: fetchElementState.futureData,
-//           builder: (context, snapshot) {
-//             if (snapshot.connectionState == ConnectionState.waiting) {
-//               return const Center(child: CircularProgressIndicator());
-//             } else if (snapshot.hasError) {
-//               return Center(child: Text('Error: ${snapshot.error}'));
-//             } else {
-//               List<dynamic> data = snapshot.data as List<dynamic>;
-//               return ListView.builder(
-//                 itemCount: data.length,
-//                 itemBuilder: (context, index) {
-//                   Map<String, dynamic> item = data[index];
-//                   return Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(vertical: 8, horizontal: 37),
-//                     child: GestureDetector(
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                             builder: (context) => SecondPage(item: item),
-//                           ),
-//                         );
-//                       },
-//                       child: Card(
-//                         color: Theme.of(context).colorScheme.background,
-//                         shadowColor: Colors.black.withOpacity(0.5),
-//                         elevation: 5,
-//                         margin: const EdgeInsets.all(8),
-//                         child: Stack(
-//                           children: [
-//                             SizedBox(
-//                               width: 310,
-//                               child: ClipRRect(
-//                                 borderRadius: const BorderRadius.only(
-//                                   topLeft: Radius.circular(15),
-//                                   topRight: Radius.circular(15),
-//                                 ),
-//                                 child: Image.network(
-//                                   '${item['flags']['png']}',
-//                                   width: 170,
-//                                   height: 170,
-//                                   fit: BoxFit.cover,
-//                                 ),
-//                               ),
-//                             ),
-//                             ListTile(
-//                               contentPadding: const EdgeInsets.all(16),
-//                               title: const SizedBox(height: 160),
-//                               subtitle: Row(
-//                                 children: [
-//                                   const SizedBox(width: 16),
-//                                   Expanded(
-//                                     child: Column(
-//                                       crossAxisAlignment:
-//                                           CrossAxisAlignment.start,
-//                                       children: [
-//                                         Text(
-//                                           item['name']['common'],
-//                                           style: TextStyle(
-//                                               color: invertedColor(
-//                                                   Theme.of(context)
-//                                                       .colorScheme
-//                                                       .primary),
-//                                               fontSize: 22,
-//                                               fontWeight: FontWeight.bold),
-//                                         ),
-//                                         const SizedBox(height: 8),
-//                                         Text(
-//                                           'Population: ${item['population']}',
-//                                           style: TextStyle(
-//                                               color: invertedColor(
-//                                                   Theme.of(context)
-//                                                       .colorScheme
-//                                                       .primary),
-//                                               fontSize: 16),
-//                                         ),
-//                                         Text(
-//                                           'Region: ${item['region']}',
-//                                           style: TextStyle(
-//                                               color: invertedColor(
-//                                                   Theme.of(context)
-//                                                       .colorScheme
-//                                                       .primary),
-//                                               fontSize: 16),
-//                                         ),
-//                                         Text(
-//                                           'Capital: ${item['capital'][0]}',
-//                                           style: TextStyle(
-//                                               color: invertedColor(
-//                                                   Theme.of(context)
-//                                                       .colorScheme
-//                                                       .primary),
-//                                               fontSize: 16),
-//                                         ),
-//                                       ],
-//                                     ),
-//                                   ),
-//                                 ],
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ),
-//                   );
-//                 },
-//               );
-//             }
-//           },
-//         ),
-//       );
-//   }
-
-//   Color invertedColor(Color color) {
-//     return color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
-//   }
-// }
+  String getContinentForCountry(String country) {
+    // Simulate getting continent information from country data
+    // You might need to replace this with actual logic based on your API response structure
+    if (country == 'Russia' || country == 'China' || country == 'India') {
+      return 'Asia';
+    } else if (country == 'United States' || country == 'Canada') {
+      return 'North America';
+    } else if (country == 'Brazil' || country == 'Argentina') {
+      return 'South America';
+    } else if (country == 'France' ||
+        country == 'Germany' ||
+        country == 'United Kingdom') {
+      return 'Europe';
+    } else if (country == 'Australia' || country == 'New Zealand') {
+      return 'Oceania';
+    } else {
+      return 'Africa';
+    }
+  }
+}
