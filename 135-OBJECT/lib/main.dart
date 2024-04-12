@@ -55,7 +55,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search and Filter Example'),
+        title: const Text('Search and Filter Example'),
       ),
       body: Column(
         children: [
@@ -139,8 +139,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
   }
 
   String getContinentForCountry(String country) {
-    // Simulate getting continent information from country data
-    // You might need to replace this with actual logic based on your API response structure
+    print(country);
     if (country == 'Russia' || country == 'China' || country == 'India') {
       return 'Asia';
     } else if (country == 'United States' || country == 'Canada') {

@@ -1,10 +1,10 @@
-// 0.1.4
+// 0.1.5
 
 import 'package:flutter/material.dart';
 
 import 'fetch_fragment.dart';
 import 'detail_page.dart';
-import 'filter_header.dart';
+// import 'filter_header.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,27 +64,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   FetchElement fetchElementState = FetchElement();
 
-  final List<String> _categories = [
-    'Фрукты',
-    'Овощи',
-    'Орехи',
-  ];
+  late List<dynamic> countries;
+  late List<dynamic> filteredCountries;
 
-  String _selectedCategory = '';
-  String _searchText = '';
+  String dropdownValue = 'All';
 
-  void _applyFilters(String category, String searchText) {
-    setState(() {
-      _selectedCategory = category;
-      _searchText = searchText;
-    });
-  }
+  TextEditingController searchController = TextEditingController();
 
-  void _resetFilters() {
-    setState(() {
-      _selectedCategory = '';
-      _searchText = '';
-    });
+  @override
+  void initState() {
+    super.initState();
+
+    countries = fetchElementState.futureData;
   }
 
   @override
@@ -115,129 +106,140 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          ProductListHeader(
-            categories: _categories,
-            onCategorySelected: (category) {
-              _applyFilters(category, _searchText);
+          TextField(
+            controller: searchController,
+            onChanged: (value) {
+              filterSearchResults(value);
             },
-            onSearchTextChanged: (searchText) {
-              _applyFilters(_selectedCategory, searchText);
-            },
-            onReset: () {
-              _resetFilters();
-            },
+            decoration: InputDecoration(
+              hintText: 'Search...',
+            ),
           ),
-          FutureBuilder(
-            future: fetchElementState.futureData,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                List<dynamic> data = snapshot.data as List<dynamic>;
-                return ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> item = data[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 37),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SecondPage(item: item),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          color: Theme.of(context).colorScheme.surface,
-                          shadowColor: Colors.black.withOpacity(0.5),
-                          elevation: 5,
-                          margin: const EdgeInsets.all(8),
-                          child: Stack(
-                            children: [
-                              SizedBox(
-                                width: 310,
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(15),
-                                    topRight: Radius.circular(15),
-                                  ),
-                                  child: Image.network(
-                                    '${item['flags']['png']}',
-                                    width: 170,
-                                    height: 170,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              ListTile(
-                                contentPadding: const EdgeInsets.all(16),
-                                title: const SizedBox(height: 160),
-                                subtitle: Row(
-                                  children: [
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item['name']['common'],
-                                            style: TextStyle(
-                                                color: invertedColor(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            'Population: ${item['population']}',
-                                            style: TextStyle(
-                                                color: invertedColor(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                                fontSize: 16),
-                                          ),
-                                          Text(
-                                            'Region: ${item['region']}',
-                                            style: TextStyle(
-                                                color: invertedColor(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                                fontSize: 16),
-                                          ),
-                                          Text(
-                                            'Capital: ${item['capital'][0]}',
-                                            style: TextStyle(
-                                                color: invertedColor(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                                fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
+          DropdownButton<String>(
+            value: dropdownValue,
+            onChanged: (String? newValue) {
+              setState(() {
+                dropdownValue = newValue!;
+                filterDropdown(newValue);
+                print(
+                    newValue); // ------------------------------------------------------------------------------------------------------
+              });
             },
+            items: <String>[
+              'All',
+              'Africa',
+              'Asia',
+              'Europe',
+              'America',
+              'Oceania',
+            ].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredCountries.length,
+              itemBuilder: (context, index) {
+                Map<String, dynamic> item = filteredCountries[index];
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 37),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SecondPage(item: item),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      color: Theme.of(context).colorScheme.surface,
+                      shadowColor: Colors.black.withOpacity(0.5),
+                      elevation: 5,
+                      margin: const EdgeInsets.all(8),
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                            width: 310,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                              ),
+                              child: Image.network(
+                                '${item['flags']['png']}',
+                                width: 170,
+                                height: 170,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          ListTile(
+                            contentPadding: const EdgeInsets.all(16),
+                            title: const SizedBox(height: 160),
+                            subtitle: Row(
+                              children: [
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item['name']['common'],
+                                        style: TextStyle(
+                                            color: invertedColor(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Population: ${item['population']}',
+                                        style: TextStyle(
+                                            color: invertedColor(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                            fontSize: 16),
+                                      ),
+                                      Text(
+                                        'Region: ${item['region']}',
+                                        style: TextStyle(
+                                            color: invertedColor(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                            fontSize: 16),
+                                      ),
+                                      Text(
+                                        'Capital: ${item['capital'][0]}',
+                                        style: TextStyle(
+                                            color: invertedColor(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                            fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -246,5 +248,74 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Color invertedColor(Color color) {
     return color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  }
+
+  void filterSearchResults(String query) async {
+    await Future.delayed(const Duration(seconds: 1));
+    List<dynamic> searchResults = [];
+    if (query.isNotEmpty) {
+      for (var country in countries) {
+        if (country['name']['common']
+            .toString()
+            .toLowerCase()
+            .contains(query.toLowerCase())) {
+          searchResults.add(country);
+        }
+      }
+    } else {
+      searchResults = countries;
+    }
+    setState(() {
+      filteredCountries = searchResults;
+    });
+  }
+
+  void filterDropdown(String continent) {
+    List<String> filteredList = [];
+    if (continent == 'All') {
+      filteredList = countries;
+    } else {
+      countries.forEach((country) {
+        if (getContinentForCountry(country) == continent) {
+          filteredList.add(country);
+        }
+      });
+    }
+    setState(() {
+      filteredCountries = filteredList;
+    });
+  }
+
+  String getContinentForCountry(String country) {
+    // if () {
+    //   return 'Asia';
+    // } else if () {
+    //   return 'North America';
+    // } else if () {
+    //   return 'South America';
+    // } else if () {
+    //   return 'Europe';
+    // } else if () {
+    //   return 'Oceania';
+    // } else {
+    //   return 'Africa';
+    // }
+
+    print(country);
+    if (country == 'Russia' || country == 'China' || country == 'India') {
+      return 'Asia';
+    } else if (country == 'United States' || country == 'Canada') {
+      return 'North America';
+    } else if (country == 'Brazil' || country == 'Argentina') {
+      return 'South America';
+    } else if (country == 'France' ||
+        country == 'Germany' ||
+        country == 'United Kingdom') {
+      return 'Europe';
+    } else if (country == 'Australia' || country == 'New Zealand') {
+      return 'Oceania';
+    } else {
+      return 'Africa';
+    }
   }
 }

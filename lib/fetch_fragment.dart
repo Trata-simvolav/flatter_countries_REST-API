@@ -13,25 +13,26 @@ class FetchElement extends StatefulWidget {
 
   // ignore: library_private_types_in_public_api
   _FetchElementState fetchElementState = _FetchElementState();
-  Future<List<dynamic>> get futureData => fetchElementState.fetchPost();
+  List<dynamic> get futureData => fetchElementState.futureDataList;
 }
 
 class _FetchElementState extends State<FetchElement> {
-  late Future<List<dynamic>> futureDataList;
+  late List<dynamic> futureDataList;
 
   @override
   void initState() {
     super.initState();
-    futureDataList = fetchPost();
   }
 
-  Future<List<dynamic>> fetchPost() async {
+  void fetchPost() async {
     final response =
         await http.get(Uri.parse("https://restcountries.com/v3.1/all"));
 
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
-      return data;
+      setState(() {
+        futureDataList = data;
+      });
     } else {
       throw Exception('Failed to load data');
     }

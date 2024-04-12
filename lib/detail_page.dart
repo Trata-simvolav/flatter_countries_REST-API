@@ -7,8 +7,6 @@ class SecondPage extends StatelessWidget {
 
   const SecondPage({super.key, required this.item});
 
-  // MyApp myApp = new MyApp();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
