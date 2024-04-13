@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class SecondPage extends StatelessWidget {
   final Map<String, dynamic> item;
+  var countries;
 
-  const SecondPage({super.key, required this.item});
+  SecondPage({super.key, required this.item, required this.countries});
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +135,44 @@ class SecondPage extends StatelessWidget {
                             buildCountriesText("Languages: ",
                                 languagesRet(item['languages']), context),
                             const SizedBox(height: 30),
+                            item.containsKey('borders')
+                                ? Text(
+                                    "Border countries: ",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: invertedColor(Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                    ),
+                                  )
+                                : SizedBox(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: getBorderCountry(
+                                      item.containsKey('borders')
+                                          ? item['borders']
+                                          : ['THIS NULL'])
+                                  .map((text) {
+                                return item.containsKey('borders')
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: Text(
+                                            text,
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      )
+                                    : SizedBox();
+                              }).toList(),
+                            ),
                           ],
                         );
                       }
@@ -171,6 +210,21 @@ class SecondPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<String> getBorderCountry(List<dynamic> listCorderCountry) {
+    if (listCorderCountry[0] == "THIS NULL") {
+      return [];
+    }
+
+    List<String> filteredList = [];
+
+    countries.forEach((country) {
+      if (listCorderCountry.contains(country['cioc'])) {
+        filteredList.add(country['name']['common']);
+      }
+    });
+    return filteredList;
   }
 
   String firstValueGeter(Map<Object, dynamic> element, String needElement) {

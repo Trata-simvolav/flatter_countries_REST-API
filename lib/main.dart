@@ -1,4 +1,4 @@
-// 0.1.6
+// 0.2.0
 
 import 'package:flutter/material.dart';
 
@@ -119,13 +119,22 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          TextField(
-            controller: searchController,
-            onChanged: (value) {
-              filterSearchResults(value);
-            },
-            decoration: InputDecoration(
-              hintText: 'Search...',
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: TextField(
+              controller: searchController,
+              onChanged: (value) {
+                filterSearchResults(value);
+              },
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                hintStyle: const TextStyle(color: Colors.grey),
+                filled: true,
+                fillColor: Colors.grey,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(28.0),
+                ),
+              ),
             ),
           ),
           DropdownButton<String>(
@@ -176,7 +185,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SecondPage(item: item),
+                                builder: (context) => SecondPage(
+                                    item: item, countries: countries),
                               ),
                             );
                           },
@@ -310,17 +320,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       filteredCountries = filteredList;
     });
-  }
-
-  List<String> getBorderCountry(String continent) {
-    List<String> filteredList = [];
-
-    countries.forEach((country) {
-      if (getContinentForCountry(country) == continent) {
-        filteredList.add(country);
-      }
-    });
-    return filteredList;
   }
 
   String getContinentForCountry(var country) {
