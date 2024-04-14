@@ -128,10 +128,12 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               decoration: InputDecoration(
                 hintText: 'Search...',
-                hintStyle: const TextStyle(color: Colors.grey),
+                hintStyle:
+                    const TextStyle(color: Color.fromARGB(255, 99, 99, 99)),
                 filled: true,
-                fillColor: Colors.grey,
+                fillColor: const Color.fromARGB(255, 202, 202, 202),
                 border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
                   borderRadius: BorderRadius.circular(28.0),
                 ),
               ),
